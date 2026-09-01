@@ -577,13 +577,13 @@ func mariadbReplEnv(mariadb *mariadbv1alpha1.MariaDB) ([]corev1.EnvVar, error) {
 	if replication.GtidDomainID != nil {
 		env = append(env, corev1.EnvVar{
 			Name:  "MARIADB_REPL_GTID_DOMAIN_ID",
-			Value: strconv.Itoa(*mariadb.Spec.Replication.GtidDomainID),
+			Value: strconv.Itoa(*replication.GtidDomainID),
 		})
 	}
 	if replication.ServerIDStartIndex != nil {
 		env = append(env, corev1.EnvVar{
 			Name:  "MARIADB_REPL_SERVER_ID_START_INDEX",
-			Value: strconv.Itoa(*mariadb.Spec.Replication.ServerIDStartIndex),
+			Value: strconv.Itoa(*replication.ServerIDStartIndex),
 		})
 	}
 	if replication.IsSemiSyncEnabled() {
@@ -605,6 +605,12 @@ func mariadbReplEnv(mariadb *mariadbv1alpha1.MariaDB) ([]corev1.EnvVar, error) {
 			env = append(env, corev1.EnvVar{
 				Name:  "MARIADB_REPL_SEMI_SYNC_MASTER_WAIT_POINT",
 				Value: waitPoint,
+			})
+		}
+		if replication.SemiSyncWaitNoSlave != nil {
+			env = append(env, corev1.EnvVar{
+				Name:  "MARIADB_REPL_SEMI_SYNC_MASTER_WAIT_NO_SLAVE",
+				Value: strconv.FormatBool(*replication.SemiSyncWaitNoSlave),
 			})
 		}
 	}
